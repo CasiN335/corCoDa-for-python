@@ -26,7 +26,7 @@ The function accepts both Pandas dataframes and Numpy arrays!
 After you have imported it can be run with:
 ````
 # if imported - where df is your original dataframe/array
-df_new = corCoda.corCoDa(df)
+df_new = corCoDa.corCoDa(df)
 ````
 
 
@@ -38,8 +38,17 @@ If you have pasted the whole function in the beginning of your file you run it w
 # if pasted - where df is your original dataframe/array
 df_new = corCoDa(df)
 ````
+
+If no argument is given the default is a Pearson correlation calculcation. To choose Spearman or Kendall use:
+```
+# Spearman calculation
+df_new = corCoDa.corCoDa(df, method="spearman")
+
+# Kendall calculation
+df_new = corCoDa.corCoDa(df, method="kendall")
+```
 ### Limitations:
-- As of now only does the Pearson correlation
+- Can only do Pearson/Spearman/Kendall correlation calculations
 - The input must be a Pandas dataframe or Numpy array
 - There can be no 0/NaN/string/negative values in the dataframe/array
 - There must be more than 2 columns in the dataframe/array
