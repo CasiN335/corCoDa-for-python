@@ -39,6 +39,7 @@ If you have pasted the whole function in the beginning of your file you run it w
 df_new = corCoDa(df)
 ````
 ### Limitations:
+- As of now only does the Pearson correlation
 - The input must be a Pandas dataframe or Numpy array
 - There can be no 0/NaN/string/negative values in the dataframe/array
 - There must be more than 2 columns in the dataframe/array
