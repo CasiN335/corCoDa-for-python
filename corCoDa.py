@@ -1,6 +1,26 @@
-'''Translation of corCoDa.r from the robCompositions R package
+'''Translation of corCoDa.r to python (from the robCompositions R package)
 
-
+ORIGINAL AUTHOR: Petra Kynclova
+#' Correlations for compositional data
+#' 
+#' This function computes correlation coefficients between compositional parts based
+#' on symmetric pivot coordinates.
+#' 
+#' @param x a matrix or data frame with compositional data
+#' @param ... additional arguments for the function \code{\link{cor}}
+#' @return A compositional correlation matrix.
+#' @author Petra Kynclova
+#' @export
+#' @examples
+#' data(expenditures)
+#' corCoDa(expenditures)
+#' @references Kynclova, P., Hron, K., Filzmoser, P. (2017)
+#' Correlation between compositional parts based on symmetric balances.
+#' \emph{Mathematical Geosciences}, 49(6), 777-796.
+#' @examples
+#' x <- arcticLake 
+#' corCoDa(x)
+#' 
 '''
 import pandas as pd
 import numpy as np
@@ -8,10 +28,10 @@ import math
 def corCoDa(x):
 
     # check
-    if not isinstance(x, np.ndarray) and not isinstance(x, pd.DataFrame): return "Must be a numpyarray or pandas dataframe" #otestad
-    if x.any == 0: return "all elements of x must be greater than 0" #otestad
+    if not isinstance(x, np.ndarray) and not isinstance(x, pd.DataFrame): raise ValueError("Must be a numpyarray or pandas dataframe")
     x = pd.DataFrame(x)
-    if len(x) <=2: return "calculation of average symmetric coordinates not possible"
+    if (x.select_dtypes(include=['object']).empty == False) or (x <= 0).values.any() or x.isnull().values.any(): raise ValueError("all elements of x must be greater than 0") 
+    if len(x.columns) <=2: raise ValueError("calculation of average symmetric coordinates not possible")
 
     def balZav(x):
         D = len(x.columns)
@@ -33,9 +53,8 @@ def corCoDa(x):
     corZav = pd.DataFrame(data = "NaN", index = range(len(x.columns)), columns = range(len(x.columns)))
     for i in range(0, len(x.columns)-1):
         for j in range(i+1, len(x.columns)):
-            #display(np.corrcoef(balZav(x.iloc[:,[i,j, *np.delete(ind,[i,j])]])))
-            corZav.iloc[i,j] = np.corrcoef(np.transpose(balZav(x.iloc[:,[i,j, *np.delete(ind,[i,j])]])))[0,1] # vi flyttar första radens andra kolumn till plats i,j
-            #display(corZav)
+            corZav.iloc[i,j] = np.corrcoef(np.transpose(balZav(x.iloc[:,[i,j, *np.delete(ind,[i,j])]])))[0,1] # correlations for average coordinates Z.av
     corZav = np.where(np.transpose(np.triu(corZav, k=1)) == 0,corZav,np.transpose(np.triu(corZav, k=1)))
-    np.fill_diagonal(corZav, 1)
+    np.fill_diagonal(corZav, 1.0)
+    corZav = pd.DataFrame(corZav).astype('float64')
     return corZav
