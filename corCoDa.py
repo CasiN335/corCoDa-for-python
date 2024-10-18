@@ -1,5 +1,7 @@
 '''Translation of corCoDa.r to python (from the robCompositions R package)
 
+corCoDa.py v1.1
+
 ORIGINAL AUTHOR: Petra Kynclova
 #' Correlations for compositional data
 #' 
@@ -25,7 +27,7 @@ ORIGINAL AUTHOR: Petra Kynclova
 import pandas as pd
 import numpy as np
 import math
-def corCoDa(x):
+def corCoDa(x, **kwargs):
 
     # check
     if not isinstance(x, np.ndarray) and not isinstance(x, pd.DataFrame): raise ValueError("Must be a numpyarray or pandas dataframe")
@@ -47,14 +49,15 @@ def corCoDa(x):
         p4 = 1/(D-1+math.sqrt(D*(D-2)))
         Z_av[:,0] = p1*(np.log(x.iloc[:,0]/(x.iloc[:,1]**p4 * p2**p3)))
         Z_av[:,1] = p1*(np.log(x.iloc[:,1]/(x.iloc[:,0]**p4 * p2**p3)))
+        Z_av = pd.DataFrame(Z_av)
         return Z_av
 
     ind = np.array(range(len(x.columns))) 
     corZav = pd.DataFrame(data = "NaN", index = range(len(x.columns)), columns = range(len(x.columns)))
     for i in range(0, len(x.columns)-1):
         for j in range(i+1, len(x.columns)):
-            corZav.iloc[i,j] = np.corrcoef(np.transpose(balZav(x.iloc[:,[i,j, *np.delete(ind,[i,j])]])))[0,1] # correlations for average coordinates Z.av
+            corZav.iloc[i,j] = balZav(x.iloc[:,[i,j, *np.delete(ind,[i,j])]]).corr(**kwargs).iloc[0,1] # correlations for average coordinates Z.av
     corZav = np.where(np.transpose(np.triu(corZav, k=1)) == 0,corZav,np.transpose(np.triu(corZav, k=1)))
-    np.fill_diagonal(corZav, 1.0)
+    np.fill_diagonal(corZav, 1)
     corZav = pd.DataFrame(corZav).astype('float64')
     return corZav
