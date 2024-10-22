@@ -48,6 +48,7 @@ df_new = corCoDa.corCoDa(df, method="spearman")
 df_new = corCoDa.corCoDa(df, method="kendall")
 ```
 ### Limitations:
+- WARING! there is a bug where sometimes spearman (and probably kendall/perason with other data) will produce a NaN value in the resulting array! The original code converts it to 0.0 but this version will produce an NaN. This is probably a bug in the original code.
 - Can only do Pearson/Spearman/Kendall correlation calculations
 - The input must be a Pandas dataframe or Numpy array
 - There can be no 0/NaN/string/negative values in the dataframe/array
