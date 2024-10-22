@@ -1,6 +1,7 @@
 '''Translation of corCoDa.r to python (from the robCompositions R package)
 
-corCoDa.py v1.1
+corCoDa.py v1.2
+- fixed transpose of 0.000000 causing NaN values
 
 ORIGINAL AUTHOR: Petra Kynclova
 #' Correlations for compositional data
@@ -60,4 +61,5 @@ def corCoDa(x, **kwargs):
     corZav = np.where(np.transpose(np.triu(corZav, k=1)) == 0,corZav,np.transpose(np.triu(corZav, k=1)))
     np.fill_diagonal(corZav, 1)
     corZav = pd.DataFrame(corZav).astype('float64')
+    corZav = corZav.replace(np.nan,0)
     return corZav
