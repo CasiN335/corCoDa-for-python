@@ -52,6 +52,7 @@ df_new = corCoDa.corCoDa(df, method="kendall")
 - The input must be a Pandas dataframe or Numpy array
 - There can be no 0/NaN/string/negative values in the dataframe/array
 - There must be more than 2 columns in the dataframe/array
+- Testing the same dataset with R vs Python it shows that the python version takes about 10x longer. So if speed is important use the original R version!
 
 ## Acknowledgements:
 The original author for this function is Petra Kynclova and the robCompositions team! I have only translated it to Python.
